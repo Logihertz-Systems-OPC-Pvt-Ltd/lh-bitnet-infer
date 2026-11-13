@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.compiler }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [ g++, clang++ ]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Compiler Toolchain
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.compiler }}" = "clang++" ]; then
+            sudo apt-get install -y clang
+          else
+            sudo apt-get install -y g++
+          fi
+
+      - name: Build lh-bitnet-infer Engine
+        run: |
+          make CXX=${{ matrix.compiler }} clean all
+
+      - name: Run Test Suite (90+ Assertions)
+        run: |
+          make CXX=${{ matrix.compiler }} test
+
+      - name: Verify CLI Subcommands & Smoke Tests
+        run: |
+          ./bin/lh-bitnet --version
+          ./bin/lh-bitnet --help
+          ./bin/lh-bitnet scan fixtures/hardened_bitnet_config.json --format table
+          ./bin/lh-bitnet scan fixtures/hardened_bitnet_config.json --format json
+          ./bin/lh-bitnet scan fixtures/hardened_bitnet_config.json --format sarif
+          ./bin/lh-bitnet quantize fixtures/sample_layer_weights.json --output /tmp/ci_layer.bnet
+          ./bin/lh-bitnet infer fixtures/sample_layer_weights.json
+          ./bin/lh-bitnet benchmark --rows 256 --cols 256 --iterations 50

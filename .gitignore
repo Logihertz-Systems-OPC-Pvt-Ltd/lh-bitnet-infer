@@ -1,0 +1,23 @@
+# Build artifacts
+build/
+bin/lh-bitnet
+tests/test_runner
+dist/
+*.o
+*.d
+*.a
+*.so
+*.dylib
+
+# Binary BitNet weights & temporary model files
+*.bnet
+*.bin
+*.tmp
+
+# Editor & OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
