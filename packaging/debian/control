@@ -1,0 +1,9 @@
+Package: lh-bitnet-infer
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Sameer Tawade <ops@logihertz.com>
+Homepage: https://www.logihertz.com
+Description: lh-bitnet - 1.58-Bit Ternary BitLinear Matrix Arithmetic
+ C++17 1.58-bit ternary neural network (BitNet b1.58) inference engine featuring 2-bit weight packing (4 weights/byte), RMSNorm, multiplication-free SIMD (AVX2/NEON) BitLinear kernels, and Edge LLM auditor.
